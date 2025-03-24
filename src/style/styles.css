@@ -1,0 +1,89 @@
+/* @import "./reset.css"; */
+@import url("https://fonts.googleapis.com/css2?family=ADLaM+Display&family=Noto+Sans+KR:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Noto Sans KR", "Roboto", sans-serif;
+}
+
+input,
+textarea,
+button {
+  font-family: "Noto Sans KR", "Roboto", sans-serif;
+}
+
+.content-box {
+  @apply bg-[#373737] text-white p-6 rounded-2xl;
+}
+
+@theme {
+  --animate-typing: blink 1s step-end infinite;
+
+  --animate-bounce-in-top: bounce-in-top 1.5s both;
+
+  --color-dark-bg: #1a191d;
+  --color-card-bg: rgba(45, 45, 48, 0.5);
+  --color-nav-bg: rgba(55, 55, 55, 0.3);
+
+  @keyframes blink {
+    0%,
+    100% {
+      border-color: transparent;
+    }
+    50% {
+      border-color: white;
+    }
+  }
+}
+
+/* 캐러셀 스타일 */
+.perspective-500 {
+  perspective: 500px;
+}
+
+.transform-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.carousel .card-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* 커스텀 속성을 위한 스타일 */
+:root {
+  --purple: #8b5cf6;
+  --pink: #ec4899;
+  --gray: #9ca3af;
+  --black: #1f2937;
+}
+
+/* 캐러셀 내부 이미지 호버 효과 */
+.carousel img {
+  transition: transform 0.3s ease;
+}
+
+.carousel:hover img:not(:hover) {
+  transform: scale(1.02);
+}
+
+/* 이미지 인디케이터 스타일 */
+.carousel button.rounded-full {
+  transition: all 0.2s ease;
+}
+
+.carousel button.rounded-full:hover {
+  transform: scale(1.2);
+}
