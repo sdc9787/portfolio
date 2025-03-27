@@ -34,26 +34,34 @@ const Carousel = ({ project, active }: { project: Project; active: number }) => 
   const count = project.img;
 
   return (
-    <div className="relative w-[15rem] h-[32rem] flex items-center justify-center perspective-500">
-      {[...new Array(count)].map((img, i) => (
-        <div
-          key={i}
-          className="absolute w-full h-full transition-all duration-300"
-          style={{
-            transform: `
-              rotateY(${(active - i) * 40}deg) 
-              scaleY(${1 + Math.abs(active - i) * -0.1}) 
-              translateZ(${Math.abs(active - i) * -20}rem) 
-              translateX(${Math.sign(active - i) * -5}rem)
-            `,
-            filter: `blur(${Math.abs(active - i) / 5}rem)`,
-            opacity: Math.abs(active - i) >= MAX_VISIBILITY ? "0" : "1",
-            display: Math.abs(active - i) > MAX_VISIBILITY ? "none" : "block",
-            zIndex: -Math.abs(active - i),
-          }}>
-          <Card imgUrl={project.imgUrl} img={i + 1} />
-        </div>
-      ))}
+    <div className="relative w-[15rem] h-[32rem] flex flex-col items-center justify-center perspective-500">
+      <div className="relative w-full h-full flex items-center justify-center">
+        {[...new Array(count)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-full h-full transition-all duration-300"
+            style={{
+              transform: `
+                rotateY(${(active - i) * 40}deg) 
+                scaleY(${1 + Math.abs(active - i) * -0.1}) 
+                translateZ(${Math.abs(active - i) * -20}rem) 
+                translateX(${Math.sign(active - i) * -5}rem)
+              `,
+              filter: `blur(${Math.abs(active - i) / 5}rem)`,
+              opacity: Math.abs(active - i) >= MAX_VISIBILITY ? "0" : "1",
+              display: Math.abs(active - i) > MAX_VISIBILITY ? "none" : "block",
+              zIndex: -Math.abs(active - i),
+            }}>
+            <Card imgUrl={project.imgUrl} img={i + 1} />
+          </div>
+        ))}
+      </div>
+      {/* 인디케이터 */}
+      <div className="flex gap-1 md:gap-2 mt-4">
+        {[...new Array(count)].map((_, i) => (
+          <div key={i} className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${active === i ? "bg-blue-500" : "bg-gray-400"} transition-all duration-300`}></div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -63,15 +71,15 @@ const ProjectImage = ({ project }: { project: Project }) => {
   const count = project.img;
 
   return (
-    <div className="relative w-screen h-full flex items-center justify-center font-montserrat overflow-hidden">
+    <div className="relative w-screen h-full flex flex-col items-center justify-center font-montserrat overflow-hidden">
       {active > 0 && (
-        <button className="absolute left-0 top-1/2  text-white text-5xl cursor-pointer z-10" onClick={() => setActive((prev) => prev - 1)}>
+        <button className="absolute left-0 top-1/2 text-white text-5xl cursor-pointer z-10" onClick={() => setActive((prev) => prev - 1)}>
           <i className="xi-angle-left-min xi-x text-blue-400"></i>
         </button>
       )}
       <Carousel project={project} active={active} />
       {active < count - 1 && (
-        <button className="absolute right-0 top-1/2  text-white text-5xl cursor-pointer z-10" onClick={() => setActive((prev) => prev + 1)}>
+        <button className="absolute right-0 top-1/2 text-white text-5xl cursor-pointer z-10" onClick={() => setActive((prev) => prev + 1)}>
           <i className="xi-angle-right-min xi-x text-blue-400"></i>
         </button>
       )}

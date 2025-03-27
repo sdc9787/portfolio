@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ProjectImage from "./Component/ProjectImage";
+import { Modal } from "./Component/Modal";
 
 interface AboutMe {
   title: string;
@@ -19,20 +20,31 @@ interface Skills {
 }
 
 interface Project {
-  title: string;
-  content: string;
-  imgUrl: string;
-  img: number;
-  link: string | null;
-  github: string;
-  skills: Skills;
+  title: string; //제목
+  content: string; //내용
+  detailContent: {}; //상세 내용
+  imgUrl: string; //이미지 경로
+  img: number; //이미지 개수
+  link: string | null; //링크
+  github: string; //깃허브 링크
+  skills: Skills; //기술 스택
+  team: string; //팀원
+  period: string; //개발 기간
 }
 
 function App() {
   const title_typing: string = "프론트엔드 개발자 신대철입니다";
   const sectionIds = ["home", "about", "skills", "projects", "contact"];
   const [activeSection, setActiveSection] = useState("");
-  const projectImgSilder = useState(0);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  const openProjectModal = (project: Project) => {
+    setSelectedProject(project);
+  };
+
+  const closeProjectModal = () => {
+    setSelectedProject(null);
+  };
 
   // 스크롤 감지해서 현재 보이는 섹션 업데이트
   useEffect(() => {
@@ -99,7 +111,23 @@ function App() {
   const projects: Project[] = [
     {
       title: "반려동물 돌보미 플랫폼",
-      content: "프로젝트1 설명",
+      content: "반려동물을 위한 돌보미 플랫폼으로, 산책 및 돌봄 매칭, 커뮤니티, 플레이스(지도)등의 서비스를 제공합니다.",
+      detailContent: [
+        {
+          title: "웹소켓을 활용한 실시간 위치 공유 및 채팅",
+          content: ["웹소켓을 이용해 실시간 위치 공유 및 채팅 기능 구현", "사용자가 원하는 시간에 반려동물의 실시간 위치 확인 가능"],
+        },
+        {
+          title: "회원 관리 및 보안을 위한 JWT 인증",
+          content: ["회원가입 시 이메일 인증을 통한 계정 활성화", "소셜 로그인 기능 지원으로 간편한 회원가입 제공", "JWT를 활용한 로그인 및 사용자 인증 강화"],
+        },
+        {
+          title: "Toss Payments API를 활용한 결제 시스템",
+          content: ["Toss Payments API를 이용한 결제 시스템 구현", "안전하고 편리한 결제 프로세스 제공"],
+        },
+      ],
+      team: "3인 팀 프로젝트[FE 1, BE 2]",
+      period: "2024.03 ~ 2024.06",
       imgUrl: "pet",
       img: 19,
       link: null,
@@ -122,6 +150,26 @@ function App() {
     {
       title: "로스트아크 정보 제공 사이트",
       content: "실시간 게임 정보를 제공하는 사이트입니다. 게임 정보를 제공하는 API를 활용하여 사용자가 원하는 게임 정보를 쉽게 찾을 수 있도록 구현했습니다.",
+      detailContent: [
+        {
+          title: "SEO 최적화",
+          content: ["Helmet을 활용하여 페이지별 메타 태그 추가 및 SEO 최적화", "구글 및 네이버 검색 최적화를 통해 최상단 검색 결과 달성", "3개월간 구글 서치 콘솔 노출 약 5,000회, 클릭 약 1,000회 기록"],
+        },
+        {
+          title: "반응형 디자인",
+          content: ["모바일 및 데스크톱 등 다양한 화면 크기에 대응하는 반응형 디자인 구현", "Tailwind CSS를 활용하여 유연한 레이아웃 구성"],
+        },
+        {
+          title: "이미지 최적화",
+          content: ["빠른 로딩을 위해 PNG를 WebP 형식으로 변환", "일부 이미지는 CDN을 활용하여 로딩 속도 개선"],
+        },
+        {
+          title: "Git Flow와 Jira를 활용한 협업",
+          content: ["효율적인 브랜치 관리를 위한 Git Flow 전략 적용", "Jira를 활용한 이슈 관리 및 스프린트 진행"],
+        },
+      ],
+      team: "2인 팀 프로젝트[FE 1, BE 1]",
+      period: "2024.10 ~ 2024.12 [유지 보수 중]",
       imgUrl: "moaloa",
       img: 7,
       link: "https://moaloa.org",
@@ -248,7 +296,7 @@ function App() {
             <p className="col-span-2 text-base text-gray-300 break-keep leading-relaxed">{project.content}</p>
 
             <div className="mt-2 col-span-2">
-              <h4 className=" text-lg font-semibold text-gray-200 mb-4">Skills</h4>
+              <h4 className="text-lg font-semibold text-gray-200 mb-4">Skills</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {Object.entries(project.skills).map(([category, skillList]) => (
                   <div key={category} className="flex flex-col gap-3">
@@ -257,7 +305,7 @@ function App() {
                       {skillList.map((skill: Skill) => (
                         <div key={skill.name} className="flex flex-col items-center gap-1">
                           <div className="w-10 h-10 flex items-center justify-center bg-gray-800/70 rounded-md p-1.5">
-                            <img src={skill.img} alt={skill.name} className="w-full h-full" />
+                            <img src={skill.img} alt={skill.name} className="rounded-lg w-full h-full" />
                           </div>
                           <span className="text-xs text-gray-300">{skill.name}</span>
                         </div>
@@ -267,10 +315,95 @@ function App() {
                 ))}
               </div>
             </div>
+            {/* 프로젝트 상세보기 버튼 모달로 출력 */}
+            <div className="col-start-1 col-end-3 flex justify-center items-center">
+              <button onClick={() => openProjectModal(project)} className="bg-blue-400 w-full h-full py-2 rounded-lg text-white font-semibold">
+                상세보기
+              </button>
+            </div>
           </div>
         ))}
       </section>
 
+      {/* Project Detail Modal */}
+      <Modal isOpen={!!selectedProject} onClose={closeProjectModal}>
+        {selectedProject && (
+          <div className="bg-card-bg rounded-xl p-8 max-w-4xl w-[90vw] max-h-[90vh] overflow-y-auto">
+            <div className="flex flex-col gap-6 relative">
+              <button onClick={closeProjectModal} className="absolute -top-2 -right-2 text-gray-300 hover:text-white transition-colors duration-200 bg-gray-700 hover:bg-gray-600 rounded-full p-2">
+                <i className="xi-close xi-x"></i>
+              </button>
+
+              <div className="flex justify-start items-center gap-4 border-b border-gray-700 pb-4">
+                <h2 className="text-2xl font-bold text-blue-400">{selectedProject.title}</h2>
+                <div className="flex items-center gap-3">
+                  {selectedProject.link && (
+                    <a href={selectedProject.link} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-400">
+                      <i className="xi-external-link xi-x"></i>
+                    </a>
+                  )}
+                  <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-400">
+                    <i className="xi-github xi-x"></i>
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <i className="xi-time-o text-blue-400"></i>
+                  <span className="text-gray-300">{selectedProject.period}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <i className="xi-user-o text-blue-400"></i>
+                  <span className="text-gray-300">{selectedProject.team}</span>
+                </div>
+              </div>
+
+              <div className="bg-gray-800 rounded-lg p-4">
+                <p className="text-gray-300 leading-relaxed">{selectedProject.content}</p>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-semibold text-blue-400">프로젝트 상세</h3>
+                {Array.isArray(selectedProject.detailContent) &&
+                  selectedProject.detailContent.map((detail: any, index: number) => (
+                    <div key={index} className="bg-gray-800 rounded-lg p-4">
+                      <h4 className="text-lg font-bold text-gray-200 mb-3">{detail.title}</h4>
+                      <ul className="list-disc list-inside text-gray-300">
+                        {detail.content.map((item: string, itemIndex: number) => (
+                          <li key={itemIndex} className="mb-1">
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-semibold text-blue-400">사용 기술</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(selectedProject.skills).map(([category, skillList]) => (
+                    <div key={category} className="bg-gray-800 rounded-lg p-4">
+                      <h4 className="text-lg font-bold text-blue-400 mb-3">{category}</h4>
+                      <div className="flex flex-wrap gap-3">
+                        {skillList.map((skill: Skill) => (
+                          <div key={skill.name} className="flex flex-col items-center gap-2">
+                            <div className="w-10 h-10 bg-gray-700 rounded-md p-2 flex items-center justify-center">
+                              <img src={skill.img} alt={skill.name} className="w-full h-full" />
+                            </div>
+                            <span className="text-xs text-gray-300">{skill.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
       {/* contact */}
       <section id="contact" className="w-full max-w-4xl flex flex-col gap-8 mb-16">
         <h2 className="text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">Contact</h2>
