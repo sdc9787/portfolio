@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ProjectImage from "./Component/ProjectImage";
 
 interface AboutMe {
   title: string;
@@ -166,8 +167,8 @@ function App() {
   return (
     <div className="relative bg-dark-bg text-gray-100 flex flex-col items-center justify-start px-4 md:px-8 lg:px-20 pb-20">
       {/*첫 메인 화면*/}
-      <section id="home" className="h-[90dvw] w-full flex flex-col items-center justify-center">
-        <div className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-1 text-3xl md:text-4xl lg:text-5xl text-white font-bold"></div>
+      <section id="home" className="h-[90dvh] w-full flex flex-col items-center justify-center">
+        <div className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-1 text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold"></div>
       </section>
 
       {/*nav바 */}
@@ -175,7 +176,7 @@ function App() {
         {sectionIds.map((id) => (
           <button
             key={id}
-            className={`font-bold transition-all rounded-full px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base ${activeSection === id ? "bg-dark-bg text-blue-400" : "hover:bg-gray-700/50 text-gray-200"}`}
+            className={`font-bold transition-all rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[0.7rem] sm:text-sm md:text-base ${activeSection === id ? "bg-dark-bg text-blue-400" : "hover:bg-gray-700/50 text-gray-200"}`}
             onClick={() => {
               document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
             }}>
@@ -216,15 +217,18 @@ function App() {
       </section>
 
       {/* projects */}
-      <section id="projects" className="w-full max-w-4xl flex flex-col gap-10 mb-24">
-        <h2 className="text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">Projects</h2>
+      <section id="projects" className="w-full h-full max-w-4xl flex flex-col gap-10 mb-24">
+        <h2 className="h-full text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">Projects</h2>
         {projects.map((project) => (
-          <div key={project.title} className="bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
+          <div key={project.title} className="h-full bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 grid grid-cols-2 gap-6">
+            <div className="col-span-2 flex flex-col gap-2">
               <div className="flex gap-2 justify-start items-center hover:">
                 <h3 className="text-xl font-bold mr-3">{project.title}</h3>
                 {/* 깃링크 아이콘 */}
-                <i className="xi-github xi-x cursor-pointer transition-all hover:text-blue-400"></i>
+                <a href={project.github} target="_black" rel="noopener noreferrer">
+                  <i className="xi-github xi-x cursor-pointer transition-all hover:text-blue-400"></i>
+                </a>
+
                 {/* 프로젝트 배포 링크 단, 운영시에만 보임 */}
                 {project.link && (
                   <a href={project.link} target="_blank" rel="noopener noreferrer">
@@ -234,16 +238,17 @@ function App() {
               </div>
               {!project.link && <p className="text-sm text-red-400">※ 현재는 운영하지 않는 사이트입니다.</p>}
             </div>
-            <p className="text-base text-gray-300 break-keep leading-relaxed">{project.content}</p>
 
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-700">
-              {Array.from({ length: project.img }, (_, index) => (
+            <div className="h-full col-start-1 col-end-3 flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-700">
+              {/* {Array.from({ length: project.img }, (_, index) => (
                 <img key={index} src={`/project-img/${project.imgUrl}/${index + 1}.webp`} alt={`${project.title} ${index + 1}`} className="w-32 h-32 md:w-40 md:h-40 object-cover rounded-lg transition-transform duration-200 hover:scale-105 shadow-md" />
-              ))}
+                ))} */}
+              <ProjectImage project={project}></ProjectImage>
             </div>
+            <p className="col-span-2 text-base text-gray-300 break-keep leading-relaxed">{project.content}</p>
 
-            <div className="mt-2">
-              <h4 className="text-lg font-semibold text-gray-200 mb-4">Skills</h4>
+            <div className="mt-2 col-span-2">
+              <h4 className=" text-lg font-semibold text-gray-200 mb-4">Skills</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {Object.entries(project.skills).map(([category, skillList]) => (
                   <div key={category} className="flex flex-col gap-3">
