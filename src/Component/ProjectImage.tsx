@@ -26,12 +26,29 @@ const MAX_VISIBILITY = 2;
 
 const Card = ({ imgUrl, img }: { imgUrl: string; img: number }) => (
   <div className="w-full h-full rounded-lg transition-all duration-300 shadow-lg">
-    <img src={`/project-img/${imgUrl}/${img}.webp`} alt="Project" className="w-full h-full object-cover rounded-lg" />
+    <img src={`/portfolio/project-img/${imgUrl}/${img}.webp`} alt="Project" className="w-full h-full object-cover rounded-lg" />
   </div>
 );
 
-const Carousel = ({ project, active }: { project: Project; active: number }) => {
+const Carousel = ({ project, active, setActive }: { project: Project; active: number; setActive: React.Dispatch<React.SetStateAction<number>> }) => {
   const count = project.img;
+
+  const handleIndicatorClick = (targetIndex: number) => {
+    if (targetIndex === active) return;
+
+    const step = targetIndex > active ? 1 : -1;
+    const interval = 100; // 애니메이션 간격 (ms)
+
+    let currentIndex = active;
+    const intervalId = setInterval(() => {
+      currentIndex += step;
+      setActive(currentIndex);
+
+      if (currentIndex === targetIndex) {
+        clearInterval(intervalId);
+      }
+    }, interval);
+  };
 
   return (
     <div className="relative w-[15rem] h-[32rem] flex flex-col items-center justify-center perspective-500">
@@ -47,7 +64,6 @@ const Carousel = ({ project, active }: { project: Project; active: number }) => 
                 translateZ(${Math.abs(active - i) * -20}rem) 
                 translateX(${Math.sign(active - i) * -5}rem)
               `,
-              filter: `blur(${Math.abs(active - i) / 5}rem)`,
               opacity: Math.abs(active - i) >= MAX_VISIBILITY ? "0" : "1",
               display: Math.abs(active - i) > MAX_VISIBILITY ? "none" : "block",
               zIndex: -Math.abs(active - i),
@@ -59,7 +75,7 @@ const Carousel = ({ project, active }: { project: Project; active: number }) => 
       {/* 인디케이터 */}
       <div className="flex gap-1 md:gap-2 mt-4">
         {[...new Array(count)].map((_, i) => (
-          <div key={i} className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${active === i ? "bg-blue-500" : "bg-gray-400"} transition-all duration-300`}></div>
+          <div onClick={() => handleIndicatorClick(i)} key={i} className={`cursor-pointer w-2 h-2 md:w-3 md:h-3 rounded-full ${active === i ? "bg-blue-500" : "bg-gray-400"} transition-all duration-300`}></div>
         ))}
       </div>
     </div>
@@ -73,14 +89,14 @@ const ProjectImage = ({ project }: { project: Project }) => {
   return (
     <div className="relative w-screen h-full flex flex-col items-center justify-center font-montserrat overflow-hidden">
       {active > 0 && (
-        <button className="absolute left-0 top-1/2 text-white text-5xl cursor-pointer z-10" onClick={() => setActive((prev) => prev - 1)}>
-          <i className="xi-angle-left-min xi-x text-blue-400"></i>
+        <button className="absolute left-0 top-1/2 text-white cursor-pointer z-10" onClick={() => setActive((prev) => prev - 1)}>
+          <i className="xi-angle-left-min xi-3x text-blue-400"></i>
         </button>
       )}
-      <Carousel project={project} active={active} />
+      <Carousel project={project} active={active} setActive={setActive} />
       {active < count - 1 && (
-        <button className="absolute right-0 top-1/2 text-white text-5xl cursor-pointer z-10" onClick={() => setActive((prev) => prev + 1)}>
-          <i className="xi-angle-right-min xi-x text-blue-400"></i>
+        <button className="absolute right-0 top-1/2 text-white  cursor-pointer z-10" onClick={() => setActive((prev) => prev + 1)}>
+          <i className="xi-angle-right-min xi-3x text-blue-400"></i>
         </button>
       )}
     </div>

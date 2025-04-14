@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ProjectImage from "./Component/ProjectImage";
 import { Modal } from "./Component/Modal";
+import { AlertText, useAlert } from "./hook/useAlert";
 
 interface AboutMe {
   title: string;
@@ -22,6 +23,10 @@ interface Skills {
 interface Project {
   title: string; //제목
   content: string; //내용
+  projectOverview: {
+    content: string;
+    contentDetail: string[];
+  }; //프로젝트 개요
   detailContent: {}; //상세 내용
   imgUrl: string; //이미지 경로
   img: number; //이미지 개수
@@ -32,11 +37,22 @@ interface Project {
   period: string; //개발 기간
 }
 
+interface AlertText {
+  text: string; //alert text
+  state: boolean; //alert state
+}
+
 function App() {
   const title_typing: string = "프론트엔드 개발자 신대철입니다";
-  const sectionIds = ["home", "about", "skills", "projects", "contact"];
+  const sectionIds = ["home", "about", "skills", "projects"];
   const [activeSection, setActiveSection] = useState("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [alertText, setAlertText] = useState<AlertText>({
+    text: "",
+    state: false,
+  });
+
+  const alertBox = useAlert(setAlertText);
 
   const openProjectModal = (project: Project) => {
     setSelectedProject(project);
@@ -79,32 +95,36 @@ function App() {
       content: "웹사이트는 단순히 기능을 제공하는 것이 아니라, 사용자가 편리하게 경험할 수 있어야 합니다. 저는 사용자 중심 개발을 최우선으로 생각하며, 직관적인 UI/UX 설계와 반응형 디자인을 통해 어떤 기기에서도 최적의 화면을 제공하는 것을 중요하게 여깁니다.",
     },
     {
-      title: "SEO 최적화 경험",
-      content: "웹 사이트를 개발및 유지보수를 진행하면서 SEO 최적화의 중요성을 경험했습니다. 3개월 동안 구글 서치 콘솔 노출5,000회, 클릭 1,000회 달성등 검색 엔진에서 더 많은 사용자가 유입될 수 있도록 노력했습니다.",
+      title: "SEO 최적화",
+      content: "웹 사이트를 운영하면서 SEO 최적화의 중요성을 깨달았습니다. SEO 최적화를 통해 구글 서치 콘솔기준 노출 약 232% 증가, 클릭 약 40% 증가, 검색 최상단에 노출되는 성과를 달성했습니다.",
+    },
+    {
+      title: "커뮤니케이션 및 협업",
+      content: "Github을 통한 코드 관리와 Jira를 활용한 이슈 트래킹으로 개발자 간 효율적인 협업 환경을 구축했습니다. Postman을 활용하여 REST API를 테스트하고 문서화함으로써 프론트엔드와 백엔드 간의 원활한 커뮤니케이션을 지원하여 프로젝트 진행 효율을 높였습니다.",
     },
   ];
 
   const skills: Skills = {
     Frontend: [
-      { name: "HTML", img: "/icon/HTML.svg" },
-      { name: "CSS", img: "/icon/CSS.svg" },
-      { name: "TypeScript", img: "/icon/TypeScript.svg" },
-      { name: "React", img: "/icon/React-Light.svg" },
-      { name: "Next.js", img: "/icon/NextJS-Light.svg" },
-      { name: "Tailwind CSS", img: "/icon/TailwindCSS-Light.svg" },
+      { name: "HTML", img: "/portfolio/icon/HTML.svg" },
+      { name: "CSS", img: "/portfolio/icon/CSS.svg" },
+      { name: "TypeScript", img: "/portfolio/icon/TypeScript.svg" },
+      { name: "React", img: "/portfolio/icon/React-Light.svg" },
+      { name: "Next.js", img: "/portfolio/icon/NextJS-Light.svg" },
+      { name: "Tailwind CSS", img: "/portfolio/icon/TailwindCSS-Light.svg" },
     ],
     StateManagement: [
-      { name: "Redux", img: "/icon/Redux.svg" },
-      { name: "Zustand", img: "/icon/Zustand.svg" },
+      { name: "Redux", img: "/portfolio/icon/Redux.svg" },
+      { name: "Zustand", img: "/portfolio/icon/Zustand.svg" },
     ],
     Deployment: [
-      { name: "AWS", img: "/icon/AWS-Light.svg" },
-      { name: "Cloudflare", img: "/icon/Cloudflare-Light.svg" },
+      { name: "AWS", img: "/portfolio/icon/AWS-Light.svg" },
+      { name: "Cloudflare", img: "/portfolio/icon/Cloudflare-Light.svg" },
     ],
     Tools: [
-      { name: "Git", img: "/icon/Git.svg" },
-      { name: "Jira", img: "/icon/Jira.svg" },
-      { name: "Postman", img: "/icon/Postman.svg" },
+      { name: "Git", img: "/portfolio/icon/Git.svg" },
+      { name: "Jira", img: "/portfolio/icon/Jira.svg" },
+      { name: "Postman", img: "/portfolio/icon/Postman.svg" },
     ],
   };
 
@@ -112,6 +132,10 @@ function App() {
     {
       title: "반려동물 돌보미 플랫폼",
       content: "반려동물을 위한 돌보미 플랫폼으로, 산책 및 돌봄 매칭, 커뮤니티, 플레이스(지도)등의 서비스를 제공합니다.",
+      projectOverview: {
+        content: "저희 팀원은 1인 가구와 반려동물 양육 가구의 증가에 주목하여, 전문적인 반려동물 산책 대행 서비스인 Dog Walker에서 아이디어를 착안하였습니다.",
+        contentDetail: ["산책 대행 및 돌봄 서비스 제공", "반려동물 동반 가능 장소 안내 기능 제공", "반려동물 관련 정보 공유 및 소통을 위한 커뮤니티 기능 제공"],
+      },
       detailContent: [
         {
           title: "웹소켓을 활용한 실시간 위치 공유 및 채팅",
@@ -134,26 +158,30 @@ function App() {
       github: "https://github.com/sdc9787/pet-sitter-pwa",
       skills: {
         Frontend: [
-          { name: "React", img: "/icon/React-Light.svg" },
-          { name: "Tailwind CSS", img: "/icon/TailwindCSS-Light.svg" },
-          { name: "TypeScript", img: "/icon/TypeScript.svg" },
-          { name: "PWA", img: "/icon/PWA.svg" },
+          { name: "React", img: "/portfolio/icon/React-Light.svg" },
+          { name: "Tailwind CSS", img: "/portfolio/icon/TailwindCSS-Light.svg" },
+          { name: "TypeScript", img: "/portfolio/icon/TypeScript.svg" },
+          { name: "PWA", img: "/portfolio/icon/PWA.svg" },
         ],
-        StateManagement: [{ name: "Redux", img: "/icon/Redux.svg" }],
-        Deployment: [{ name: "Cloudflare", img: "/icon/Cloudflare-Light.svg" }],
+        StateManagement: [{ name: "Redux", img: "/portfolio/icon/Redux.svg" }],
+        Deployment: [{ name: "Cloudflare", img: "/portfolio/icon/Cloudflare-Light.svg" }],
         Tools: [
-          { name: "Git", img: "/icon/Git.svg" },
-          { name: "Postman", img: "/icon/Postman.svg" },
+          { name: "Git", img: "/portfolio/icon/Git.svg" },
+          { name: "Postman", img: "/portfolio/icon/Postman.svg" },
         ],
       },
     },
     {
       title: "로스트아크 정보 제공 사이트",
       content: "실시간 게임 정보를 제공하는 사이트입니다. 게임 정보를 제공하는 API를 활용하여 사용자가 원하는 게임 정보를 쉽게 찾을 수 있도록 구현했습니다.",
+      projectOverview: {
+        content: "출시된지 오래된 게임이다보니 대부분의 추가기능을 가진 웹사이트들이 존재했습니다. 실제 유저들이 사이트에 접근하기 위해서는 기존 사이트들에 추가된 기능이 필요하다고 판단하여, 새로운 기능을 추가하거나 기존 사이트들에 없는 기능을 추가하기로 했습니다.",
+        contentDetail: ["보석 검색 - [기존 사이트에는 없는 기능]", "영지 제작 - [영지 교환 비율 추가]", "생활 재료 판매 - [기본 사이트에는 없는 기능]", "경매 입찰 - [이득률 조정 기능 추가]"],
+      },
       detailContent: [
         {
           title: "SEO 최적화",
-          content: ["Helmet을 활용하여 페이지별 메타 태그 추가 및 SEO 최적화", "구글 및 네이버 검색 최적화를 통해 최상단 검색 결과 달성", "3개월간 구글 서치 콘솔 노출 약 5,000회, 클릭 약 1,000회 기록"],
+          content: ["Helmet을 활용하여 페이지별 메타 태그 추가 및 SEO 최적화", "구글 및 네이버 검색 최적화를 통해 최상단 검색 결과 달성", "SEO 최적화를 통해 구글 서치 콘솔기준 노출 약 232% 증가, 클릭 약 40% 증가"],
         },
         {
           title: "반응형 디자인",
@@ -169,26 +197,26 @@ function App() {
         },
       ],
       team: "2인 팀 프로젝트[FE 1, BE 1]",
-      period: "2024.10 ~ 2024.12 [유지 보수 중]",
+      period: "2024.10 ~ 2024.12",
       imgUrl: "moaloa",
-      img: 7,
+      img: 6,
       link: "https://moaloa.org",
       github: "https://github.com/msw-Hub/moaloa",
       skills: {
         Frontend: [
-          { name: "React", img: "/icon/React-Light.svg" },
-          { name: "TypeScript", img: "/icon/TypeScript.svg" },
-          { name: "Tailwind CSS", img: "/icon/TailwindCSS-Light.svg" },
+          { name: "React", img: "/portfolio/icon/React-Light.svg" },
+          { name: "TypeScript", img: "/portfolio/icon/TypeScript.svg" },
+          { name: "Tailwind CSS", img: "/portfolio/icon/TailwindCSS-Light.svg" },
         ],
-        StateManagement: [{ name: "Redux", img: "/icon/Redux.svg" }],
+        StateManagement: [{ name: "Redux", img: "/portfolio/icon/Redux.svg" }],
         Deployment: [
-          { name: "AWS", img: "/icon/AWS-Light.svg" },
-          { name: "Cloudflare", img: "/icon/Cloudflare-Light.svg" },
+          { name: "AWS", img: "/portfolio/icon/AWS-Light.svg" },
+          { name: "Cloudflare", img: "/portfolio/icon/Cloudflare-Light.svg" },
         ],
         Tools: [
-          { name: "Git", img: "/icon/Git.svg" },
-          { name: "Jira", img: "/icon/Jira.svg" },
-          { name: "Postman", img: "/icon/Postman.svg" },
+          { name: "Git", img: "/portfolio/icon/Git.svg" },
+          { name: "Jira", img: "/portfolio/icon/Jira.svg" },
+          { name: "Postman", img: "/portfolio/icon/Postman.svg" },
         ],
       },
     },
@@ -213,9 +241,9 @@ function App() {
   }, []);
 
   return (
-    <div className="relative bg-dark-bg text-gray-100 flex flex-col items-center justify-start px-4 md:px-8 lg:px-20 pb-20">
+    <div className="relative bg-dark-bg text-gray-100 flex flex-col items-center justify-start px-4 md:px-8 lg:px-20 gap-20">
       {/*첫 메인 화면*/}
-      <section id="home" className="h-[90dvh] w-full flex flex-col items-center justify-center">
+      <section id="home" className="h-[80dvh] w-full flex flex-col items-center justify-center">
         <div className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-1 text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold"></div>
       </section>
 
@@ -224,7 +252,7 @@ function App() {
         {sectionIds.map((id) => (
           <button
             key={id}
-            className={`font-bold transition-all rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[0.7rem] sm:text-sm md:text-base ${activeSection === id ? "bg-dark-bg text-blue-400" : "hover:bg-gray-700/50 text-gray-200"}`}
+            className={`cursor-pointer font-bold transition-all rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[0.7rem] sm:text-sm md:text-base ${activeSection === id ? "bg-dark-bg text-blue-400" : "hover:bg-gray-700/50 text-gray-200"}`}
             onClick={() => {
               document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
             }}>
@@ -233,15 +261,57 @@ function App() {
         ))}
       </nav>
 
+      {/* 오른쪽 하단 이메일, github 버튼 fixed */}
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 items-center justify-center transition-all">
+        {/* 이메일 주소 복사 */}
+        <div className="relative flex items-center group/tooltip">
+          <button onClick={() => alertBox("복사되었습니다.")} name="이메일 주소 복사" className="w-10 h-10 shadow-lg flex items-center justify-center rounded-full transition-all hover:opacity-80 bg-white cursor-pointer">
+            <i className="xi-mail xi-x text-dark-bg"></i>
+          </button>
+          <div className="fixed flex items-center justify-center overflow-hidden rounded px-2 py-1 translate-x-[-110%] invisible z-[10] after:absolute after:flex after:left-0 after:top-0 after:right-0 after:bottom-0 after:w-full after:h-full after:bg-[#232323] after:opacity-80 after:z-[-1] group-hover/tooltip:visible">
+            <span className="text-xs text-white">sfc9787@gmail.com</span>
+          </div>
+        </div>
+
+        {/* 깃허브 링크 이동*/}
+        <div className="relative flex items-center group/tooltip">
+          <a href="https://github.com/sdc9787" target="_blank" rel="noopener noreferrer" className="w-10 h-10 shadow-lg flex items-center justify-center rounded-full transition-all hover:opacity-80 bg-white">
+            <i className="xi-github xi-x text-dark-bg"></i>
+          </a>
+          <div className="fixed flex items-center justify-center overflow-hidden rounded px-2 py-1 translate-x-[-110%] invisible z-[10] after:absolute after:flex after:left-0 after:top-0 after:right-0 after:bottom-0 after:w-full after:h-full after:bg-[#232323] after:opacity-80 after:z-[-1] group-hover/tooltip:visible">
+            <span className="text-xs text-white">github.com/sdc9787</span>
+          </div>
+        </div>
+
+        {/* <div className="relative flex items-center group/tooltip">
+          <button name="최소화" className="w-[40px] h-[40px] shadow-lg flex items-center justify-center rounded-full transition-all hover:opacity-80 bg-white">
+            <i className="xi-angle-up-min xi-2x text-dark-bg"></i>
+          </button>
+          <div className="fixed flex items-center justify-center overflow-hidden rounded px-2 py-1 translate-x-[-110%] invisible z-[10] after:absolute after:flex after:left-0 after:top-0 after:right-0 after:bottom-0 after:w-full after:h-full after:bg-[#232323] after:opacity-80 after:z-[-1] group-hover/tooltip:visible">
+            <span className="text-xs text-white">최소화</span>
+          </div>
+        </div> */}
+      </div>
+
       {/* about me */}
       <section id="about" className="w-full max-w-4xl flex flex-col gap-10 mb-24">
-        <h2 className="text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">About Me</h2>
-        {aboutMe.map((about) => (
-          <div key={about.title} className="bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:translate-y-1 flex flex-col gap-4">
-            <h3 className="text-xl font-bold text-blue-400">{about.title}</h3>
-            <p className="text-base text-gray-300 break-keep leading-relaxed">{about.content}</p>
-          </div>
-        ))}
+        <h2 className="text-title-white text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">About Me</h2>
+
+        {/* Card container */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {aboutMe.map((about) => (
+            <div key={about.title} className="bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col gap-4">
+              {/* <div className="flex justify-center items-center mb-2">
+                <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center">
+                  <i className="xi-image-o text-blue-400 text-2xl"></i>
+                </div>
+              </div> */}
+
+              <h3 className="text-xl font-bold text-center">{about.title}</h3>
+              <p className="text-sm text-gray-300 break-keep leading-relaxed">{about.content}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* skill & tools */}
@@ -268,7 +338,7 @@ function App() {
       <section id="projects" className="w-full h-full max-w-4xl flex flex-col gap-10 mb-24">
         <h2 className="h-full text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">Projects</h2>
         {projects.map((project) => (
-          <div key={project.title} className="h-full bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 grid grid-cols-2 gap-6">
+          <div key={project.title} className="h-full bg-card-bg rounded-xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 grid grid-cols-2 gap-6">
             <div className="col-span-2 flex flex-col gap-2">
               <div className="flex gap-2 justify-start items-center hover:">
                 <h3 className="text-xl font-bold mr-3">{project.title}</h3>
@@ -296,16 +366,15 @@ function App() {
             <p className="col-span-2 text-base text-gray-300 break-keep leading-relaxed">{project.content}</p>
 
             <div className="mt-2 col-span-2">
-              <h4 className="text-lg font-semibold text-gray-200 mb-4">Skills</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {Object.entries(project.skills).map(([category, skillList]) => (
                   <div key={category} className="flex flex-col gap-3">
-                    <h5 className="text-base font-bold text-blue-400">{category}</h5>
+                    <h5 className="text-base font-bold ">{category}</h5>
                     <div className="flex flex-wrap gap-4">
                       {skillList.map((skill: Skill) => (
                         <div key={skill.name} className="flex flex-col items-center gap-1">
-                          <div className="w-10 h-10 flex items-center justify-center bg-gray-800/70 rounded-md p-1.5">
-                            <img src={skill.img} alt={skill.name} className="rounded-lg w-full h-full" />
+                          <div className="w-15 h-10 flex items-center justify-center bg-gray-800/70 p-1.5">
+                            <img src={skill.img} alt={skill.name} className="rounded-md h-full" />
                           </div>
                           <span className="text-xs text-gray-300">{skill.name}</span>
                         </div>
@@ -317,7 +386,7 @@ function App() {
             </div>
             {/* 프로젝트 상세보기 버튼 모달로 출력 */}
             <div className="col-start-1 col-end-3 flex justify-center items-center">
-              <button onClick={() => openProjectModal(project)} className="bg-blue-400 w-full h-full py-2 rounded-lg text-white font-semibold">
+              <button onClick={() => openProjectModal(project)} className="cursor-pointer bg-blue-400 hover:bg-blue-500 transition-all w-full h-full py-2 rounded-lg text-white font-semibold">
                 상세보기
               </button>
             </div>
@@ -328,7 +397,7 @@ function App() {
       {/* Project Detail Modal */}
       <Modal isOpen={!!selectedProject} onClose={closeProjectModal}>
         {selectedProject && (
-          <div className="bg-card-bg rounded-xl p-8 max-w-4xl w-[90vw] max-h-[90vh] overflow-y-auto">
+          <div className="bg-card-bg rounded-xl p-4 md:p-6 lg:p-8 max-w-4xl w-[90vw] max-h-[90vh] overflow-y-auto">
             <div className="flex flex-col gap-6 relative">
               <button onClick={closeProjectModal} className="absolute -top-2 -right-2 text-gray-300 hover:text-white transition-colors duration-200 bg-gray-700 hover:bg-gray-600 rounded-full p-2">
                 <i className="xi-close xi-x"></i>
@@ -364,6 +433,20 @@ function App() {
               </div>
 
               <div className="flex flex-col gap-4">
+                <h3 className="text-xl font-semibold text-blue-400">프로젝트 개요 및 기능</h3>
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <p className="text-gray-300 leading-relaxed">{selectedProject.projectOverview.content}</p>
+                  <ul className="list-disc list-inside text-gray-300 mt-2">
+                    {selectedProject.projectOverview.contentDetail.map((item: string, index: number) => (
+                      <li key={index} className="mb-1">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
                 <h3 className="text-xl font-semibold text-blue-400">프로젝트 상세</h3>
                 {Array.isArray(selectedProject.detailContent) &&
                   selectedProject.detailContent.map((detail: any, index: number) => (
@@ -390,7 +473,7 @@ function App() {
                         {skillList.map((skill: Skill) => (
                           <div key={skill.name} className="flex flex-col items-center gap-2">
                             <div className="w-10 h-10 bg-gray-700 rounded-md p-2 flex items-center justify-center">
-                              <img src={skill.img} alt={skill.name} className="w-full h-full" />
+                              <img src={skill.img} alt={skill.name} className="rounded-md" />
                             </div>
                             <span className="text-xs text-gray-300">{skill.name}</span>
                           </div>
@@ -405,17 +488,27 @@ function App() {
         )}
       </Modal>
       {/* contact */}
-      <section id="contact" className="w-full max-w-4xl flex flex-col gap-8 mb-16">
+      {/* <section id="contact" className="w-full max-w-4xl flex flex-col gap-8 mb-16">
         <h2 className="text-2xl font-bold relative pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-16 after:h-1 after:bg-blue-500 after:rounded">Contact</h2>
-        <div className="bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col gap-4">
-          {/* Add your contact information here */}
-          <p className="text-gray-300">연락처 정보를 추가할 수 있습니다.</p>
+        <h3></h3>
+        <div className="bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col gap-6">
+          <div className="flex items-center gap-4">
+            <i className="xi-mail text-blue-400 text-xl"></i>
+            <span className="text-gray-300 text-base">sfc9787@gmail.com</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <i className="xi-github text-blue-400 text-xl"></i>
+            <a href="https://github.com/sdc9787" target="_blank" rel="noopener noreferrer" className="text-gray-300 text-base hover:text-blue-400 transition-colors">
+              github.com/sdc9787
+            </a>
+          </div>
         </div>
-      </section>
+      </section> */}
 
+      <AlertText text={alertText.text} state={alertText.state} />
       {/* Footer */}
       <footer className="w-full max-w-4xl text-center text-gray-400 text-sm py-8">
-        <p>© 2025 신대철. All rights reserved.</p>
+        <p>© 2025. Shin Dae Cheol. All rights reserved.</p>
       </footer>
     </div>
   );
