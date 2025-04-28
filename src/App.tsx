@@ -5,7 +5,8 @@ import { AlertText, useAlert } from "./hook/useAlert";
 
 interface AboutMe {
   title: string;
-  content: string;
+  content: string[];
+  bold: string[];
 }
 
 interface Skill {
@@ -92,15 +93,18 @@ function App() {
   const aboutMe: AboutMe[] = [
     {
       title: "사용자 중심 개발",
-      content: "웹사이트는 단순히 기능을 제공하는 것이 아니라, 사용자가 편리하게 경험할 수 있어야 합니다. 저는 사용자 중심 개발을 최우선으로 생각하며, 직관적인 UI/UX 설계와 반응형 디자인을 통해 어떤 기기에서도 최적의 화면을 제공하는 것을 중요하게 여깁니다.",
+      content: ["웹사이트는 단순히 기능을 제공하는 것이 아니라, 사용자가 편리하게 경험할 수 있어야 합니다.", "저는 사용자 중심 개발을 최우선으로 생각하며, 직관적인 UI/UX 설계와 반응형 디자인을 통해 어떤 기기에서도 최적의 화면을 제공하는 것을 중요하게 여깁니다."],
+      bold: ["사용자 중심 개발", "직관적인 UI/UX 설계와 반응형 디자인"],
     },
     {
       title: "SEO 최적화",
-      content: "웹 사이트를 운영하면서 SEO 최적화의 중요성을 깨달았습니다. SEO 최적화를 통해 구글 서치 콘솔기준 노출 약 232% 증가, 클릭 약 40% 증가, 검색 최상단에 노출되는 성과를 달성했습니다.",
+      content: ["웹 사이트를 운영하면서 SEO 최적화의 중요성을 깨달았습니다.", "SEO 최적화를 통해 구글 서치 콘솔기준 노출 약 232% 증가, 클릭 약 40% 증가, 검색 최상단에 노출되는 성과를 달성했습니다."],
+      bold: ["노출 약 232% 증가, 클릭 약 40% 증가, 검색 최상단에 노출되는 성과를 달성"],
     },
     {
       title: "커뮤니케이션 및 협업",
-      content: "Github을 통한 코드 관리와 Jira를 활용한 이슈 트래킹으로 개발자 간 효율적인 협업 환경을 구축했습니다. Postman을 활용하여 REST API를 테스트하고 문서화함으로써 프론트엔드와 백엔드 간의 원활한 커뮤니케이션을 지원하여 프로젝트 진행 효율을 높였습니다.",
+      content: ["Github을 통한 코드 관리와 Jira를 활용한 이슈 트래킹으로 개발자 간 효율적인 협업 환경을 구축했습니다.", "Postman을 활용하여 REST API를 테스트하고 문서화함으로써 프론트엔드와 백엔드 간의 원활한 커뮤니케이션을 지원하여 프로젝트 진행 효율을 높였습니다."],
+      bold: ["효율적인 협업 환경을 구축", "원활한 커뮤니케이션"],
     },
   ];
 
@@ -243,8 +247,31 @@ function App() {
     type();
   }, []);
 
+  const HighlightedText = ({ text, boldWords }: { text: string; boldWords: string[] }) => {
+    if (!boldWords.length) return <>{text}</>;
+
+    // 정규식으로 bold 단어 매칭
+    const pattern = new RegExp(`(${boldWords.join("|")})`, "g");
+
+    const parts = text.split(pattern);
+
+    return (
+      <>
+        {parts.map((part, index) =>
+          boldWords.includes(part) ? (
+            <span key={index} className="font-black inline-block py-0.5 px-1 rounded-md bg-dark-bg">
+              {part}
+            </span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </>
+    );
+  };
+
   return (
-    <div className="relative bg-dark-bg text-gray-100 flex flex-col items-center justify-start px-4 md:px-8 lg:px-20 gap-12 md:gap-16 lg:gap-20">
+    <div className="relative font-medium bg-dark-bg text-gray-100 flex flex-col items-center justify-start px-4 md:px-8 lg:px-20 gap-12 md:gap-16 lg:gap-20">
       {/*첫 메인 화면*/}
       <section id="home" className="h-[80dvh] w-full flex flex-col items-center justify-center">
         <div className="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-white pr-1 text-xl sm:text-2xl md:text-4xl lg:text-5xl text-white font-bold"></div>
@@ -288,15 +315,20 @@ function App() {
       </div>
 
       {/* about me */}
-      <section id="about" className="w-full max-w-4xl flex flex-col gap-6 sm:gap-8 md:gap-10 mb-16 sm:mb-20 md:mb-24">
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold relative pb-1 sm:pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 sm:after:w-14 md:after:w-16 after:h-1 after:bg-blue-500 after:rounded">About Me</h2>
-
+      <section id="about" className="w-full max-w-4xl flex flex-col gap-10 mb-24">
+        <h2 className="h-full text-xl sm:text-2xl md:text-3xl font-bold relative pb-1 sm:pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 sm:after:w-14 md:after:w-16 after:h-1 after:bg-blue-500 after:rounded">About Me</h2>
         {/* Card container */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+        <div className="flex flex-col gap-6">
           {aboutMe.map((about) => (
-            <div key={about.title} className="bg-card-bg rounded-xl p-4 sm:p-5 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col gap-3 sm:gap-4">
-              <h3 className="text-lg sm:text-xl md:text-xl font-bold text-center">{about.title}</h3>
-              <p className="text-xs sm:text-sm md:text-base text-gray-300 break-keep leading-relaxed">{about.content}</p>
+            <div key={about.title} className="bg-card-bg rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col gap-4">
+              <h3 className="text-lg sm:text-xl md:text-xl font-bold text-start">{about.title}</h3>
+              <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed">
+                {about.content.map((text, i) => (
+                  <p key={i} className="text-xs sm:text-sm md:text-base leading-relaxed">
+                    <HighlightedText text={text} boldWords={about.bold} />
+                  </p>
+                ))}
+              </p>
             </div>
           ))}
         </div>
@@ -307,7 +339,7 @@ function App() {
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold relative pb-1 sm:pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 sm:after:w-14 md:after:w-16 after:h-1 after:bg-blue-500 after:rounded">Skills</h2>
         {Object.entries(skills).map(([category, skillList]) => (
           <div key={category} className="flex flex-col gap-4 sm:gap-5 md:gap-6">
-            <h3 className="text-lg sm:text-xl md:text-xl font-bold text-blue-400">{category}</h3>
+            <h3 className="text-lg sm:text-xl md:text-xl font-bold">{category}</h3>
             <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8">
               {skillList.map((skill: Skill) => (
                 <div key={skill.name} className="flex flex-col items-center gap-2 sm:gap-2.5 md:gap-3 transition-transform duration-200 hover:-translate-y-1">
@@ -358,7 +390,7 @@ function App() {
                     <div className="flex flex-wrap gap-3 sm:gap-3.5 md:gap-4">
                       {skillList.map((skill: Skill) => (
                         <div key={skill.name} className="flex flex-col items-center gap-0.5 sm:gap-0.75 md:gap-1">
-                          <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-10 flex items-center justify-center bg-gray-800/70 p-1 sm:p-1.25 md:p-1.5">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-10 flex items-center justify-center bg-card-bg/70 p-1 sm:p-1.25 md:p-1.5">
                             <img src={skill.img} alt={skill.name} className="rounded-md h-full" />
                           </div>
                           <span className="text-[10px] sm:text-xs md:text-sm text-gray-300">{skill.name}</span>
@@ -382,44 +414,44 @@ function App() {
       {/* Project Detail Modal */}
       <Modal isOpen={!!selectedProject} onClose={closeProjectModal}>
         {selectedProject && (
-          <div className="bg-card-bg rounded-xl p-3 sm:p-4 md:p-6 lg:p-8 max-w-4xl w-[90vw] max-h-[90vh] overflow-y-auto">
+          <div className="bg-dark-bg rounded-xl p-3 sm:p-4 md:p-6 lg:p-8 max-w-4xl w-[90vw] max-h-[90vh] overflow-y-auto">
             <div className="flex flex-col gap-4 sm:gap-5 md:gap-6 relative">
               <button onClick={closeProjectModal} className="absolute -top-2 -right-2 text-gray-300 hover:text-white transition-colors duration-200 bg-gray-700 hover:bg-gray-600 rounded-full p-1.5 sm:p-2">
                 <i className="xi-close xi-x text-sm sm:text-base md:text-lg"></i>
               </button>
 
               <div className="flex justify-start items-center gap-3 sm:gap-3.5 md:gap-4 border-b border-gray-700 pb-3 sm:pb-3.5 md:pb-4">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-blue-400">{selectedProject.title}</h2>
+                <h2 className="text-lg sm:text-xl md:text-2xl font-bold">{selectedProject.title}</h2>
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
+                  <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-400 transition-all">
+                    <i className="xi-github xi-x text-sm sm:text-base md:text-lg"></i>
+                  </a>
                   {selectedProject.link && (
-                    <a href={selectedProject.link} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-400">
+                    <a href={selectedProject.link} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-400 transition-all">
                       <i className="xi-external-link xi-x text-sm sm:text-base md:text-lg"></i>
                     </a>
                   )}
-                  <a href={selectedProject.github} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-blue-400">
-                    <i className="xi-github xi-x text-sm sm:text-base md:text-lg"></i>
-                  </a>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3 sm:gap-3.5 md:gap-4">
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
-                  <i className="xi-time-o text-blue-400 text-sm sm:text-base md:text-lg"></i>
+                  <i className="xi-time-o  text-sm sm:text-base md:text-lg"></i>
                   <span className="text-xs sm:text-sm md:text-base text-gray-300">{selectedProject.period}</span>
                 </div>
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
-                  <i className="xi-user-o text-blue-400 text-sm sm:text-base md:text-lg"></i>
+                  <i className="xi-user-o  text-sm sm:text-base md:text-lg"></i>
                   <span className="text-xs sm:text-sm md:text-base text-gray-300">{selectedProject.team}</span>
                 </div>
               </div>
 
-              <div className="bg-gray-800 rounded-lg p-3 sm:p-3.5 md:p-4">
+              <div className="bg-card-bg rounded-lg p-3 sm:p-3.5 md:p-4">
                 <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed">{selectedProject.content}</p>
               </div>
 
               <div className="flex flex-col gap-3 sm:gap-3.5 md:gap-4">
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-blue-400">프로젝트 개요 및 기능</h3>
-                <div className="bg-gray-800 rounded-lg p-3 sm:p-3.5 md:p-4">
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold ">프로젝트 개요 및 기능</h3>
+                <div className="bg-card-bg rounded-lg p-3 sm:p-3.5 md:p-4">
                   <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed">{selectedProject.projectOverview.content}</p>
                   <ul className="list-disc list-inside text-gray-300 mt-1.5 sm:mt-2">
                     {selectedProject.projectOverview.contentDetail.map((item: string, index: number) => (
@@ -432,10 +464,10 @@ function App() {
               </div>
 
               <div className="flex flex-col gap-3 sm:gap-3.5 md:gap-4">
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-blue-400">프로젝트 상세</h3>
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold ">프로젝트 상세</h3>
                 {Array.isArray(selectedProject.detailContent) &&
                   selectedProject.detailContent.map((detail: any, index: number) => (
-                    <div key={index} className="bg-gray-800 rounded-lg p-3 sm:p-3.5 md:p-4">
+                    <div key={index} className="bg-card-bg rounded-lg p-3 sm:p-3.5 md:p-4">
                       <h4 className="text-sm sm:text-base md:text-lg font-bold text-gray-200 mb-2 sm:mb-2.5 md:mb-3">{detail.title}</h4>
                       <ul className="list-disc list-inside text-gray-300">
                         {detail.content.map((item: string, itemIndex: number) => (
@@ -449,15 +481,15 @@ function App() {
               </div>
 
               <div className="flex flex-col gap-3 sm:gap-3.5 md:gap-4">
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-blue-400">사용 기술</h3>
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold ">사용 기술</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5 md:gap-4">
                   {Object.entries(selectedProject.skills).map(([category, skillList]) => (
-                    <div key={category} className="bg-gray-800 rounded-lg p-3 sm:p-3.5 md:p-4">
-                      <h4 className="text-sm sm:text-base md:text-lg font-bold text-blue-400 mb-2 sm:mb-2.5 md:mb-3">{category}</h4>
+                    <div key={category} className="bg-card-bg rounded-lg p-3 sm:p-3.5 md:p-4">
+                      <h4 className="text-sm sm:text-base md:text-lg font-bold  mb-2 sm:mb-2.5 md:mb-3">{category}</h4>
                       <div className="flex flex-wrap gap-2 sm:gap-2.5 md:gap-3">
                         {skillList.map((skill: Skill) => (
                           <div key={skill.name} className="flex flex-col items-center gap-1 sm:gap-1.5 md:gap-2">
-                            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 bg-gray-700 rounded-md p-1.5 sm:p-1.75 md:p-2 flex items-center justify-center">
+                            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10  rounded-md p-1.5 sm:p-1.75 md:p-2 flex items-center justify-center">
                               <img src={skill.img} alt={skill.name} className="rounded-md" />
                             </div>
                             <span className="text-[10px] sm:text-xs text-gray-300">{skill.name}</span>
