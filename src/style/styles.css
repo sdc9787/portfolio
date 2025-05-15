@@ -83,6 +83,27 @@ button {
   }
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.section-visible {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
 /* 캐러셀 스타일 */
 .perspective-500 {
   perspective: 500px;

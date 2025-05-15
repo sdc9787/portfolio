@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import ProjectImage from "./Component/ProjectImage";
 import { Modal } from "./Component/Modal";
 import { AlertText, useAlert } from "./hook/useAlert";
+import AOS from "aos";
+import "aos/dist/aos.css"; // AOS 스타일 가져오기
 
 interface AboutMe {
   title: string;
@@ -88,6 +90,13 @@ function App() {
     window.addEventListener("scroll", handleScroll);
     handleScroll(); // 초기 실행
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // 애니메이션 지속 시간 (ms)
+      once: true, // 애니메이션이 한 번만 실행되도록 설정
+    });
   }, []);
 
   const aboutMe: AboutMe[] = [
@@ -315,7 +324,7 @@ function App() {
       </div>
 
       {/* about me */}
-      <section id="about" className="w-full max-w-4xl flex flex-col gap-10 mb-24">
+      <section id="about" data-aos="fade-up" className="w-full max-w-4xl flex flex-col gap-10 mb-24">
         <h2 className="h-full text-xl sm:text-2xl md:text-3xl font-bold relative pb-1 sm:pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 sm:after:w-14 md:after:w-16 after:h-1 after:bg-blue-500 after:rounded">About Me</h2>
         {/* Card container */}
         <div className="flex flex-col gap-6">
@@ -324,9 +333,9 @@ function App() {
               <h3 className="text-lg sm:text-xl md:text-xl font-bold text-start">{about.title}</h3>
               <p className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed">
                 {about.content.map((text, i) => (
-                  <p key={i} className="text-xs sm:text-sm md:text-base leading-relaxed">
+                  <span key={i} className="text-xs sm:text-sm md:text-base leading-relaxed">
                     <HighlightedText text={text} boldWords={about.bold} />
-                  </p>
+                  </span>
                 ))}
               </p>
             </div>
@@ -335,7 +344,7 @@ function App() {
       </section>
 
       {/* skill & tools */}
-      <section id="skills" className="w-full max-w-4xl flex flex-col gap-8 sm:gap-10 md:gap-12 mb-16 sm:mb-20 md:mb-24">
+      <section id="skills" data-aos="fade-up" className="w-full max-w-4xl flex flex-col gap-8 sm:gap-10 md:gap-12 mb-16 sm:mb-20 md:mb-24">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold relative pb-1 sm:pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 sm:after:w-14 md:after:w-16 after:h-1 after:bg-blue-500 after:rounded">Skills</h2>
         {Object.entries(skills).map(([category, skillList]) => (
           <div key={category} className="flex flex-col gap-4 sm:gap-5 md:gap-6">
@@ -355,7 +364,7 @@ function App() {
       </section>
 
       {/* projects */}
-      <section id="projects" className="w-full h-full max-w-4xl flex flex-col gap-6 sm:gap-8 md:gap-10 mb-16 sm:mb-20 md:mb-24">
+      <section id="projects" data-aos="fade-up" className="w-full h-full max-w-4xl flex flex-col gap-6 sm:gap-8 md:gap-10 mb-16 sm:mb-20 md:mb-24">
         <h2 className="h-full text-xl sm:text-2xl md:text-3xl font-bold relative pb-1 sm:pb-2 after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-12 sm:after:w-14 md:after:w-16 after:h-1 after:bg-blue-500 after:rounded">Projects</h2>
         {projects.map((project) => (
           <div key={project.title} className="h-full bg-card-bg rounded-xl p-3 sm:p-4 md:p-6 shadow-lg hover:shadow-xl transition-all duration-300 grid grid-cols-2 gap-4 sm:gap-5 md:gap-6">
