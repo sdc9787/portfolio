@@ -38,6 +38,7 @@ interface Project {
   skills: Skills; //기술 스택
   team: string; //팀원
   period: string; //개발 기간
+  role: string; //개발 역할
 }
 
 interface AlertText {
@@ -164,6 +165,7 @@ function App() {
         },
       ],
       team: "3인 팀 프로젝트[FE 1, BE 2]",
+      role: "프로젝트 기획 및 FE 개발 기여도 100%",
       period: "2024.03 ~ 2024.06",
       imgUrl: "pet",
       img: 19,
@@ -213,6 +215,7 @@ function App() {
         },
       ],
       team: "2인 팀 프로젝트[FE 1, BE 1]",
+      role: "프로젝트 기획 및 FE 개발 기여도 100%",
       period: "2024.10 ~ 2024.12",
       imgUrl: "moaloa",
       img: 6,
@@ -451,6 +454,10 @@ function App() {
                 <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
                   <i className="xi-user-o  text-sm sm:text-base md:text-lg"></i>
                   <span className="text-xs sm:text-sm md:text-base text-gray-300">{selectedProject.team}</span>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3">
+                  <i className="xi-cog text-sm sm:text-base md:text-lg"></i>
+                  <span className="text-xs sm:text-sm md:text-base text-gray-300">{selectedProject.role}</span>
                 </div>
               </div>
 
